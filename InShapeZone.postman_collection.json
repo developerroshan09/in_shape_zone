@@ -1,0 +1,129 @@
+{
+	"info": {
+		"_postman_id": "4e7392bd-6c02-4dd2-8b5b-2925abeeeaa5",
+		"name": "InShapeZone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32632846"
+	},
+	"item": [
+		{
+			"name": "User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users?id=68ce6cdd462148d2d6f9c05d",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "68ce6cdd462148d2d6f9c05d"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{base_url}}/api/users"
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Mary",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "jane@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "Female",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "Active",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{base_url}}/api/users/68ce514c6090b4f6d423af87"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
