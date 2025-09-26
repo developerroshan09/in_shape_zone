@@ -13,7 +13,8 @@ var schema = new mongoose.Schema({
     gender: String,
     status: String,
     username: { type: String, unique: true, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    jti: []
 });
 
 const Userdb = mongoose.model('userdb', schema);

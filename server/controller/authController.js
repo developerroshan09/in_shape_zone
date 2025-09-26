@@ -8,11 +8,21 @@ const jwt = require('jsonwebtoken');
 
 // db model
 const Userdb = require('./../model/model');
+const {body, validationResult } = require("express-validator");
 
 // User registration
 exports.register = async (req, res) => {
     try {
         const { username, password, name, email } = req.body;
+        
+        body('email').isEmail().withMessage('Please provide a valid email');
+        const errors = validationResult(req);
+        console.log('errors: ' + errors.array);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ success: false, message: errors.array().map(error => error.msg).join(' ')});
+            return;
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new Userdb({
             name: req.body.name,
