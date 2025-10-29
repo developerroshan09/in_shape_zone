@@ -5,7 +5,7 @@ const verifyToken = require('./../../middleware/authMiddleware')
 const controller = require('../controller/controller');
 
 // defining api routes and their corresponding controller functions
-route.post('/api/user', controller.create);
+route.post('/user', controller.create);
 
 // protected apis
 route.get('/api/users', verifyToken, controller.find);
