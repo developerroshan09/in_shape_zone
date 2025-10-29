@@ -1,4 +1,4 @@
-const blacklist = require("../../blacklist");
+// const blacklist = require("../../blacklist");
 
 const express = require('express');
 const route = express.Router();
