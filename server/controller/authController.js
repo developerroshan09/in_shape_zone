@@ -1,5 +1,5 @@
 // holds blacklisted token to mock logout
-const blacklist = require("../../blacklist");
+// const blacklist = require("../../blacklist");
 
 const express = require('express');
 const router = express.Router();
@@ -48,7 +48,7 @@ exports.logout = (req, res) => {
     }
 
     // Add token to blacklist
-    blacklist.add(token);
+    // blacklist.add(token);
     res.json({ message: "Logged out succesfully" });
 };
 
