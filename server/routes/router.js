@@ -10,6 +10,6 @@ route.post('/api/user', controller.create);
 // protected apis
 route.get('/api/users', verifyToken, controller.find);
 route.put('/api/users/:id', verifyToken, controller.update);
-route.delete('/api/users/:id', verifyToken, controller.delete);
+route.delete('/api/users/:id', verifyToken, controller.deleteUser);
 
 module.exports = route;

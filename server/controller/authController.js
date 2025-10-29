@@ -66,10 +66,10 @@ exports.login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Authentication failed'});
         }
-        const token = jwt.sign({ userID: user._id}, 'your-secret-key', {
+        const token = jwt.sign({ userID: user._id, jti: "ulid"}, 'your-secret-key', {
             expiresIn: '1h',
         });
-        res.status(200).json({ token});
+        res.status(200).json({ "token": token, "user": user});
     } catch (error) {
         res.status(500).json({ error: 'Login failed'});
     }

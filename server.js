@@ -3,6 +3,7 @@ const dotenv=require('dotenv');
 const morgan=require('morgan');
 const bodyparser=require('body-parser');
 const path=require('path');
+const foodRoutes = require('./server/routes/foodRoutes');
 
 const bodyParser = require("body-parser");
 const connectDB = require("./server/database/connection");
@@ -29,8 +30,9 @@ app.use(bodyParser.urlencoded( { extended: true}));
 // Loading routes from a separate file
 app.use('/', require('./server/routes/router'));
 app.use('/', require('./server/routes/auth'));
+app.use('/', require('./server/routes/foodRoutes'));
 
 // Starting the server and listening on the specified port
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
