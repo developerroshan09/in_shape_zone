@@ -1,7 +1,7 @@
 var Userdb = require('../model/model');
 
 // create and save new user
-exports.create = (req, res) => {
+create = (req, res) => {
     // validate request
     if(!req.body) { 
         res.status(400).send({ message: 'Content cannot be empty'});
@@ -27,7 +27,7 @@ exports.create = (req, res) => {
 };
 
     // retrieve and return all users/ retrieve and return a single user
-exports.find = (req,res) => {
+find = (req,res) => {
     if(req.query.id){
         const id = req.query.id;
         Userdb.findById(id)
@@ -53,7 +53,7 @@ exports.find = (req,res) => {
 };
 
 //update user by id
-exports.update = (req,res) => {
+update = (req,res) => {
     console.log('update: ' + req.body);
     if(!req.body) {
         return res
@@ -78,7 +78,7 @@ exports.update = (req,res) => {
 };
 
 // delete user by id
-exports.delete = (req, res) => {
+deleteUser = (req, res) => {
     const id = req.params.id;
 
     Userdb.findByIdAndDelete(id)
@@ -93,3 +93,10 @@ exports.delete = (req, res) => {
             res.status(500).send({ message: "Could not delte use with id = " + id});
         })
 };
+
+ module.exports = {
+    create,
+    find,
+    update,
+    deleteUser
+ }
