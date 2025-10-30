@@ -12,7 +12,7 @@ async function  verifyToken(req, res, next) {
     
     if (!token) {
         return res.status(401).json({
-        status: "fail",
+        success: false,
         message: "You are not logged in! Please log in to get access.",
         });
     }
@@ -21,7 +21,7 @@ async function  verifyToken(req, res, next) {
     const isBlacklisted = await Blacklist.findOne({ token });
     if (isBlacklisted) {
         return res.status(401).json({
-            status: "fail",
+            success: false,
             message: "Token is no longer valid. Please log in again"
         });
     }
