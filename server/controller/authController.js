@@ -1,5 +1,5 @@
 // holds blacklisted token to mock logout
-// const blacklist = require("../../blacklist");
+const Blacklist = require("../../models/blacklistModel");
 
 const express = require('express');
 const router = express.Router();
@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 // db model
 const Userdb = require('./../model/model');
 const {body, validationResult } = require("express-validator");
+const { success } = require("zod");
 
 // User registration
 exports.register = async (req, res) => {
@@ -40,24 +41,36 @@ exports.register = async (req, res) => {
     }
 };
 
-exports.logout = (req, res) => {
+const blacklistToken = async (token) => {
+    const decoded = jwt.decode(token);
+    const expTimestamp = decoded.exp * 1000; // convert to milliseconds
+    console.log('blacklist: ', expTimestamp);
+    await Blacklist.create({
+        token: token,
+        expiresAt: new Date(expTimestamp),
+    });
+}
+
+exports.logout = async (req, res) => {
+
     const token = req.header('Authorization');
 
-    if (!token) {
-        return res.status(400).json({ error: "Token expired"});
+    if (token) {
+        await blacklistToken(token);
     }
 
-    // Add token to blacklist
-    // blacklist.add(token);
-    res.json({ message: "Logged out succesfully" });
+    // Clear the cookie
+    res.cookie("jwt", "loggdout", {
+        expiresAt: new Date(Date.now() + 10 * 1000),
+    });
+
+    res.status(200).json({ success: true });
 };
 
 // User login
 exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log('login req username: ' + username);
-        console.log('login req password: ' + password);
         const user = await Userdb.findOne({ username });
         if (!user) {
             return res.status(401).json({ error: 'Authentication failed' });
