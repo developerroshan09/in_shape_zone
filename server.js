@@ -27,6 +27,10 @@ connectDB();
 // Parsing incoming request bodies using body-parser middleware
 app.use(bodyParser.urlencoded( { extended: true}));
 
+// CORS middleware
+const cors = require('cors');
+app.use(cors());
+
 // Loading routes from a separate file
 app.use('/', require('./server/routes/router'));
 app.use('/', require('./server/routes/auth'));
