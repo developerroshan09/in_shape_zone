@@ -33,6 +33,6 @@ app.use('/', require('./server/routes/auth'));
 app.use('/', require('./server/routes/foodRoutes'));
 
 // Starting the server and listening on the specified port
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port: ${PORT}`);
 });
