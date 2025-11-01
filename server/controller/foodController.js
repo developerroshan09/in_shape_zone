@@ -55,8 +55,8 @@ const fetchHints = async (req, res) => {
         //send refined response
         res.json({
             success: true,
-            query: query,
-            data: rawData
+            text: query,
+            hints: rawData
         });
 
     } catch(error) {
@@ -89,8 +89,8 @@ const getAutoComplete = async (req, res) => {
         res.json({
             success: true,
             query: query,
-            count: suggestions.count,
-            data: suggestions
+            count: rawData.count,
+            data: rawData
         });
     } catch(error) {
         console.error('Autocomplete error: ', error);

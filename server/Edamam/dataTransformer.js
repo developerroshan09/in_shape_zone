@@ -6,8 +6,7 @@ const transformAutocomplete = (rawData) => {
     }
 
     return rawData.map(suggestion => ({
-        text: suggestion,
-        value: suggestion
+        suggestion
     }));
 }
 
