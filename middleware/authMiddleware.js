@@ -8,6 +8,7 @@ const Userdb = require('../server/model/model');
 async function  verifyToken(req, res, next) {
     // Extract token from headers or cookies
    const token = req.header('Authorization');
+   console.log(token);
     if (!token) return res.status(401).json({ error: 'Access denied' });
     
     if (!token) {
