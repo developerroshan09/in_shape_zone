@@ -28,18 +28,16 @@ async function  verifyToken(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, 'your_secret_key');//process.env.JWT_SECRET);
 
         // Check if the user still exists
-        const currentUser = await Userdb.findById(decoded.userID);
+        const currentUser = await Userdb.findById(decoded.sub);
         if(!currentUser) {
             return res.status(401).json({
                 status: "fail",
                 message: "The user belonging to this token no longer exists."
             });
         }
-        req.userID = decoded.userID;
-        console.log(decoded);
         next();
     } catch (error) {
         res.status(401).json({ error: error.message});

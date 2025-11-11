@@ -9,10 +9,11 @@ const jwt = require('jsonwebtoken');
 // db model
 const Userdb = require('./../model/model');
 const {body, validationResult } = require("express-validator");
-const { success } = require("zod");
+const { success, date } = require("zod");
+const RefreshToken = require("../../models/RefreshToken");
 
 // User registration
-exports.register = async (req, res) => {
+const register = async (req, res) => {
     try {
         const { username, password, name, email } = req.body;
         
@@ -51,12 +52,16 @@ const blacklistToken = async (token) => {
     });
 }
 
-exports.logout = async (req, res) => {
+const logout = async (req, res) => {
 
     const token = req.header('Authorization');
 
     if (token) {
         await blacklistToken(token);
+        const payload = jwt.decode(token);
+        if (payload.sub) {
+            await RefreshToken.deleteMany({ userId: payload.sub });
+        }
     }
 
     // Clear the cookie
@@ -68,7 +73,7 @@ exports.logout = async (req, res) => {
 };
 
 // User login
-exports.login = async (req, res) => {
+const login = async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await Userdb.findOne({ username });
@@ -79,11 +84,85 @@ exports.login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Authentication failed'});
         }
-        const token = jwt.sign({ userID: user._id, jti: "ulid"}, 'your-secret-key', {
-            expiresIn: '1h',
-        });
-        res.status(200).json({ "token": token, "user": user});
+
+        const accessToken = generateAccessToken(user);
+        const refreshToken = await generateRefreshToken(user);
+
+        res.status(200).json({ "accessToken": accessToken, "refreshToken": refreshToken,  "user": user});
     } catch (error) {
-        res.status(500).json({ error: 'Login failed'});
+        res.status(500).json({ error: error });
     }
 };
+
+const refreshToken = async (req, res) => {
+    const token = req.body.refreshToken;
+    if(!token) return res.status(401);
+    let payload;
+    try {
+        payload = jwt.verify(token, 'your_refresh_key');
+    } catch (error) {
+    
+        if (error.name === 'TokenExpiredError') {
+            console.log("⚠️ Refresh token expired:", error.expiredAt);
+            return res.status(401).json({ error: "Refresh token expired. Please log in again." });
+        }
+        console.log("❌ JWT verification failed:", error.message);
+        
+        return res.status(403).json({ error: "Invalid refresh token." });
+    }
+
+    console.log('payload: ', payload)
+
+    const storedTokens = await RefreshToken.find({ userId: payload.sub });
+    const match = await Promise.any(storedTokens.map ( t => bcrypt.compare(token, t.tokenHash)))
+        .catch(() => null);
+
+    if (!match) return res.status(403);
+
+    const user = { _id: payload.sub };
+    const newAccessToken = generateAccessToken(user);
+   
+    await RefreshToken.deleteMany( { userId: payload.sub });
+    const newRefreshToken = await generateRefreshToken(user);
+    console.log(newRefreshToken);
+    res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken, user: user });
+}
+
+function generateAccessToken(user) {
+    return jwt.sign({ sub: user._id, username: user.username}, 'your_secret_key', {
+            expiresIn: '30s'
+        }
+    );
+}
+
+async function generateRefreshToken(user) {
+    const refreshToken = jwt.sign({ sub: user._id }, 'your_refresh_key', { expiresIn: '59s'});
+    const tokenHash = await bcrypt.hash(refreshToken, 10);
+
+    console.log({
+        userId: user._id,
+        tokenHash: tokenHash,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
+
+    try {
+        await RefreshToken.create({
+            userId: user._id,
+            tokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+        });
+    } catch(error) {
+        console.log("Error saving refresh token: ", error.message);
+    }
+
+    return refreshToken
+}
+
+
+
+module.exports = {
+    register,
+    logout,
+    login,
+    refreshToken,
+}
