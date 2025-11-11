@@ -130,13 +130,13 @@ const refreshToken = async (req, res) => {
 
 function generateAccessToken(user) {
     return jwt.sign({ sub: user._id, username: user.username}, 'your_secret_key', {
-            expiresIn: '30s'
+            expiresIn: '5m'
         }
     );
 }
 
 async function generateRefreshToken(user) {
-    const refreshToken = jwt.sign({ sub: user._id }, 'your_refresh_key', { expiresIn: '59s'});
+    const refreshToken = jwt.sign({ sub: user._id }, 'your_refresh_key', { expiresIn: '7d'});
     const tokenHash = await bcrypt.hash(refreshToken, 10);
 
     console.log({
