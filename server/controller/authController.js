@@ -130,7 +130,7 @@ const refreshToken = async (req, res) => {
 
 function generateAccessToken(user) {
     return jwt.sign({ sub: user._id, username: user.username}, 'your_secret_key', {
-            expiresIn: '5m'
+            expiresIn: '2m'
         }
     );
 }
