@@ -2,8 +2,8 @@ const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const app_id = process.env.APP_ID;
-const app_key = process.env.APP_KEY;
+const app_id = 'fb584dc4';//process.env.APP_ID;
+const app_key = '6c7379f4c87ce1cdcb29529a56fd746a';//process.env.APP_KEY;
 
 const fetchAutocomplete =  async (query) => {
     return await axios.get(`https://api.edamam.com/auto-complete?app_id=${app_id}&app_key=${app_key}&q=${query}`)
@@ -19,7 +19,7 @@ const fetchAutocomplete =  async (query) => {
 }
 
 const fetchHints =  async (query) => {
-    return await axios.get(`https://api.edamam.com/api/food-database/v2/parser?app_id=${process.env.APP_ID}&app_key=${process.env.APP_KEY}&ingr=${query}&nutrition-type=cooking`)
+    return await axios.get(`https://api.edamam.com/api/food-database/v2/parser?app_id=${app_id}&app_key=${app_key}&ingr=${query}&nutrition-type=cooking`)
     .then( response => {
         console.log(response.data);
         return response.data;  
@@ -33,7 +33,7 @@ const fetchHints =  async (query) => {
 }
 
 const fetchNutrition =  async (ingredients) => {
-  const url = `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${process.env.APP_ID}&app_key=${process.env.APP_KEY}`;
+  const url = `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${app_id}&app_key=${app_key}`;
 
   try {
     const response = await axios.post(url, ingredients, {
