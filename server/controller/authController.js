@@ -44,6 +44,7 @@ const register = async (req, res) => {
 
 const blacklistToken = async (token) => {
     const decoded = jwt.decode(token);
+    console.log('decoded: ', decoded.exp);
     const expTimestamp = decoded.exp * 1000; // convert to milliseconds
     console.log('blacklist: ', expTimestamp);
     await Blacklist.create({
@@ -54,9 +55,10 @@ const blacklistToken = async (token) => {
 
 const logout = async (req, res) => {
 
-    const token = req.header('Authorization');
+    const token = getTokenFromHeader(req);
 
     if (token) {
+        console.log('Logging out token: space', token);
         await blacklistToken(token);
         const payload = jwt.decode(token);
         if (payload.sub) {
@@ -71,6 +73,18 @@ const logout = async (req, res) => {
 
     res.status(200).json({ success: true });
 };
+
+const getTokenFromHeader = (req) => {
+    const authHeader = req.header('Authorization');
+    if (!authHeader) return null;
+
+    if (authHeader.startsWith('Bearer ')) {
+        return authHeader.split(' ')[1];
+    }
+
+    return authHeader; // fallback (old clients)
+};
+
 
 // User login
 const login = async (req, res) => {
